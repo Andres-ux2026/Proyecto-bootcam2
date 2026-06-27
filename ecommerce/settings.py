@@ -59,10 +59,13 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 IS_RENDER = os.environ.get('RENDER')
 
 if IS_RENDER:
+    DB_DIR = Path('/data')
+    DB_DIR.mkdir(parents=True, exist_ok=True)
+    DB_PATH = DB_DIR / 'db.sqlite3'
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': '/data/db.sqlite3',
+            'NAME': str(DB_PATH),
         }
     }
 else:
