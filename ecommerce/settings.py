@@ -60,21 +60,20 @@ IS_RENDER = os.environ.get('RENDER')
 
 if IS_RENDER:
     DB_DIR = Path('/data')
-    DB_DIR.mkdir(parents=True, exist_ok=True)
-    DB_PATH = DB_DIR / 'db.sqlite3'
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': str(DB_PATH),
-        }
-    }
+    try:
+        DB_DIR.mkdir(parents=True, exist_ok=True)
+        DB_PATH = DB_DIR / 'db.sqlite3'
+    except (PermissionError, OSError):
+        DB_PATH = BASE_DIR / 'db.sqlite3'
 else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+    DB_PATH = BASE_DIR / 'db.sqlite3'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': str(DB_PATH),
     }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
