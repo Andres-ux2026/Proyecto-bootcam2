@@ -89,6 +89,9 @@ PRODUCTS_BY_CATEGORY = {
 class Command(BaseCommand):
     help = "Siembra la base de datos con categorías, 20 productos y 2 usuarios de prueba"
 
+    def add_arguments(self, parser):
+        parser.add_argument('--noinput', action='store_true', help='Skip confirmation')
+
     def handle(self, *args, **options):
         self.stdout.write("Creando usuarios...")
         admin, created = User.objects.get_or_create(
