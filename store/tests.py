@@ -15,16 +15,16 @@ class E2ETest(TestCase):
         cls.cat = cat
         cls.prod_a = Product.objects.create(
             category=cat, name="Smartphone", slug="smartphone",
-            description="Teléfono inteligente", price=299.99, stock=10,
+            description="Teléfono inteligente", price=299990, stock=10,
             image="https://picsum.photos/seed/smartphone/400/300",
         )
         cls.prod_b = Product.objects.create(
             category=cat, name="Laptop", slug="laptop",
-            description="Laptop potente", price=899.99, stock=5,
+            description="Laptop potente", price=899990, stock=5,
         )
         cls.prod_low = Product.objects.create(
             category=cat, name="Audífonos", slug="audifonos",
-            description="Audífonos", price=49.99, stock=1,
+            description="Audífonos", price=49990, stock=1,
         )
         cls.admin = User.objects.create_user("admin", password="admin123", is_staff=True, is_superuser=True)
         cls.client_user = User.objects.create_user("cliente", password="cliente123")
@@ -41,7 +41,7 @@ class E2ETest(TestCase):
         r = self.client.get(f'/product/{self.prod_a.pk}/')
         self.assertEqual(r.status_code, 200)
         self.assertContains(r, "Smartphone")
-        self.assertContains(r, "299,99")
+        self.assertContains(r, "299990,00")
         self.assertContains(r, "Stock disponible: 10")
 
     def test_filtro_categoria(self):
@@ -105,7 +105,7 @@ class E2ETest(TestCase):
         r = self.client.get('/cart/')
         self.assertContains(r, "Smartphone")
         self.assertContains(r, "Laptop")
-        self.assertContains(r, "1199,98")  # 299.99 + 899.99
+        self.assertContains(r, "1199980,00")
 
     def test_actualizar_cantidad(self):
         self.client.login(username='cliente', password='cliente123')
@@ -183,11 +183,11 @@ class E2ETest(TestCase):
         self.client.login(username='admin', password='admin123')
         self.client.post(f'/product/{self.prod_a.pk}/update/', {
             'category': self.cat.pk, 'name': 'Smartphone Pro',
-            'description': 'Upd', 'price': 399.99, 'stock': 15,
+            'description': 'Upd', 'price': 399990, 'stock': 15,
         }, follow=True)
         self.prod_a.refresh_from_db()
         self.assertEqual(self.prod_a.name, 'Smartphone Pro')
-        self.assertEqual(self.prod_a.price, Decimal('399.99'))
+        self.assertEqual(self.prod_a.price, Decimal('399990'))
 
     def test_admin_elimina_producto(self):
         self.client.login(username='admin', password='admin123')
