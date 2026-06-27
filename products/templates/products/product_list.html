@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Catálogo de Productos{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Catálogo de Productos</h1>
+
+    <div class="flex gap-2 mb-6 flex-wrap">
+        <a href="{% url 'products:list' %}"
+           class="px-4 py-2 rounded-lg text-sm font-medium {% if not current_category %}bg-indigo-600 text-white{% else %}bg-gray-200 text-gray-700 hover:bg-gray-300{% endif %}">
+            Todas
+        </a>
+        {% for cat in categories %}
+            <a href="{% url 'products:list' %}?category={{ cat.slug }}"
+               class="px-4 py-2 rounded-lg text-sm font-medium {% if current_category == cat.slug %}bg-indigo-600 text-white{% else %}bg-gray-200 text-gray-700 hover:bg-gray-300{% endif %}">
+                {{ cat.name }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for product in products %}
+            <a href="{% url 'products:detail' product.pk %}" class="group">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+                    <div class="h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+                        {% if product.image %}
+                            <img src="{{ product.image }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition">
+                        {% else %}
+                            <span class="text-gray-400 text-4xl">📦</span>
+                        {% endif %}
+                    </div>
+                    <div class="p-4">
+                        <p class="text-xs text-indigo-500 font-medium mb-1">{{ product.category.name }}</p>
+                        <h2 class="font-semibold text-gray-800 group-hover:text-indigo-600">{{ product.name }}</h2>
+                        <p class="text-lg font-bold text-gray-900 mt-1">${{ product.price }}</p>
+                        <p class="text-xs text-gray-500 mt-1">Stock: {{ product.stock }}</p>
+                    </div>
+                </div>
+            </a>
+        {% empty %}
+            <p class="col-span-full text-center text-gray-500 py-12">No hay productos disponibles.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+<nav class="bg-white shadow-sm border-b sticky top-0 z-50">
+    <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+            <a href="{% url 'products:list' %}" class="text-xl font-bold text-indigo-600 hover:text-indigo-800">
+                🛒 BootCamper
+            </a>
+
+            <div class="flex items-center gap-4">
+                <a href="{% url 'products:list' %}" class="text-gray-600 hover:text-indigo-600 text-sm font-medium">
+                    Catálogo
+                </a>
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'cart:detail' %}" class="relative text-gray-600 hover:text-indigo-600 text-sm font-medium">
+                        Carrito
+                        {% if cart_item_count > 0 %}
+                            <span class="absolute -top-2 -right-4 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                {{ cart_item_count }}
+                            </span>
+                        {% endif %}
+                    </a>
+
+                    {% if user.is_staff %}
+                        <a href="{% url 'products:create' %}" class="text-gray-600 hover:text-indigo-600 text-sm font-medium">
+                            Gestión
+                        </a>
+                    {% endif %}
+
+                    <a href="{% url 'orders:history' %}" class="text-gray-600 hover:text-indigo-600 text-sm font-medium">
+                        Mis Pedidos
+                    </a>
+
+                    <form method="post" action="{% url 'accounts:logout' %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-gray-600 hover:text-red-600 text-sm font-medium">
+                            Cerrar Sesión
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" class="text-gray-600 hover:text-indigo-600 text-sm font-medium">
+                        Iniciar Sesión
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>

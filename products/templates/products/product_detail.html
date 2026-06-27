@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="md:flex">
+            <div class="md:w-1/2 h-80 bg-gray-100 flex items-center justify-center">
+                {% if product.image %}
+                    <img src="{{ product.image }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+                {% else %}
+                    <span class="text-gray-400 text-6xl">📦</span>
+                {% endif %}
+            </div>
+            <div class="p-8 md:w-1/2">
+                <p class="text-sm text-indigo-500 font-medium">{{ product.category.name }}</p>
+                <h1 class="text-2xl font-bold text-gray-800 mt-1">{{ product.name }}</h1>
+                <p class="text-3xl font-bold text-gray-900 mt-3">${{ product.price }}</p>
+                <p class="text-sm text-gray-500 mt-1">Stock disponible: {{ product.stock }}</p>
+                <p class="text-gray-600 mt-4">{{ product.description|linebreaksbr }}</p>
+
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'cart:add' product.pk %}" class="mt-6">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 font-medium">
+                            Añadir al Carrito
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}?next={% url 'products:detail' product.pk %}"
+                       class="block text-center w-full bg-gray-300 text-gray-700 py-3 px-6 rounded-lg font-medium mt-6">
+                        Inicia sesión para comprar
+                    </a>
+                {% endif %}
+
+                {% if user.is_staff %}
+                    <div class="mt-4 flex gap-2">
+                        <a href="{% url 'products:update' product.pk %}" class="flex-1 text-center bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600 text-sm font-medium">
+                            Editar
+                        </a>
+                        <a href="{% url 'products:delete' product.pk %}" class="flex-1 text-center bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 text-sm font-medium">
+                            Eliminar
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
